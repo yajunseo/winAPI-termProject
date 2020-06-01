@@ -148,18 +148,27 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BlueMarble.h" />
+    <ClInclude Include="CBackGround.h" />
+    <ClInclude Include="CMyMain.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlueMarble.cpp" />
+    <ClCompile Include="CBackGround.cpp" />
+    <ClCompile Include="CMyMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlueMarble.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\..\..\..\..\BG1.bmp" />
+    <Image Include="BG.bmp" />
+    <Image Include="bitmap1.bmp" />
+    <Image Include="bitmap2.bmp" />
     <Image Include="BlueMarble.ico" />
+    <Image Include="Image\BackGround\BG.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
