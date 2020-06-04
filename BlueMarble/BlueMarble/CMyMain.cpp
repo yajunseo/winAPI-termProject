@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "CMyMain.h"
 #include "CBackGround.h"
+#include "CPlayer.h"
 
 #include <ole2.h>  
 #include <gdiplus.h>
@@ -30,7 +31,11 @@ void CMyMain::MainInit(HWND hWnd, HINSTANCE hInst)
 	SelectObject(m_hBackDC, m_hBackBitmap);
 	ReleaseDC(hWnd, hdc);
 
+
 	g_BGround.BG_Init(hWnd, hInst);
+	
+	player1.Init_Player(hWnd, hInst, 1);
+	player2.Init_Player(hWnd, hInst, 2);
 }
 
 void CMyMain::MainUpdate(HWND hWnd)
@@ -51,6 +56,9 @@ void CMyMain::MainRender(HWND hWnd)
 
 	g_BGround.BG_Render(m_hBackDC, m_Rect);
 
+	player1.Render_Player(m_hBackDC);
+	player2.Render_Player(m_hBackDC);
+
 	static HDC hdc;
 	hdc = GetDC(hWnd);
 	BitBlt(hdc, 0, 0, m_Rect.right, m_Rect.bottom, m_hBackDC, 0, 0, SRCCOPY);
@@ -60,6 +68,8 @@ void CMyMain::MainRender(HWND hWnd)
 void CMyMain::MainDestroy()
 {
 	g_BGround.BG_Destroy();
+	player1.Destroy_Player();
+	player2.Destroy_Player();
 
 	if (m_hBackBitmap != NULL)
 	{

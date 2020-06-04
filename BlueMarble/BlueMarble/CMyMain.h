@@ -1,4 +1,5 @@
 #pragma once
+#include "CPlayer.h"
 
 class CMyMain
 {
@@ -10,6 +11,7 @@ class CMyMain
 	HDC m_hBackDC = NULL;
 	HBITMAP m_hBackBitmap = NULL;
 
+	CPlayer player1, player2;
 
 public:
 	CMyMain();

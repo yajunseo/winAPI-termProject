@@ -5,6 +5,7 @@
 #include "BlueMarble.h"
 #include "CMyMain.h"
 
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
