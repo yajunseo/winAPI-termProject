@@ -1,0 +1,12 @@
+﻿  BlueMarble.cpp
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(160,49): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(161,50): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(165,45): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(167,46): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(173,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(175,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(179,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(181,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(187,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\source\repos\BlueMarble\BlueMarble\BlueMarble.cpp(189,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  BlueMarble.vcxproj -> C:\Users\yajunseo\source\repos\BlueMarble\Debug\BlueMarble.exe
