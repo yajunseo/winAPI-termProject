@@ -5,6 +5,7 @@
 #include "BlueMarble.h"
 #include "Resource.h"
 #include "CPlayer.h"
+#include "CBuild.h"
 
 #pragma comment(lib, "Msimg32.lib")
 
@@ -130,9 +131,23 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 CPlayer player1, player2;
 int boardArr1[40][2];
 int boardArr2[40][2];
-#define IDC_BUTTON 200
-#define IDC_EDIT1 201
-#define IDC_EDIT2 202
+#define IDC_BUTTON1 200
+#define IDC_BUTTON2 201
+#define IDC_EDIT1 202
+#define IDC_EDIT2 203
+#define IDC_EDIT2 203
+#define IDC_CHECK1 204
+#define IDC_CHECK2 205
+#define IDC_CHECK3 206
+#define IDC_CHECK4 207
+#define IDC_CHECK5 208
+#define IDC_CHECK6 209
+#define IDC_CHECK7 212
+#define IDC_CHECK8 213
+
+#define IDC_BUTTON3 210
+#define IDC_BUTTON4 211
+int turn = 1;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -142,10 +157,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static RECT rc;
     BITMAP bm;
     static int bitIndex = 0;
-    static HWND hDice, hTurn, hMoney[2];
+    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy;
     float boardWidth;
     float boardHeight;
     TCHAR str[100];
+    int dice;
+    int temp;
+    CBuild build;
+
     switch (message)
     {
     case WM_CREATE:
@@ -189,18 +208,35 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             boardArr2[i][1] = rc.top + 85 + boardHeight * (i - 30);
         }
         hDice = CreateWindow(_T("button"), _T("주사위 굴리기"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
-                ,rc.right/2-60,rc.top+180, 120, 50, hWnd, (HMENU)IDC_BUTTON, hInst, NULL);
-        hTurn = CreateWindow(_T("button"), _T("턴 종료"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
-            , rc.right / 2 - 60, rc.top + 250, 120, 50, hWnd, (HMENU)IDC_BUTTON, hInst, NULL);
-        hMoney[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
+            , rc.right / 2 - 200, rc.top + 300, 120, 50, hWnd, (HMENU)IDC_BUTTON1, hInst, NULL);
+        hBuy = CreateWindow(_T("button"), _T("구입하기"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
+            , rc.right / 2 - 60, rc.top + 300, 120, 50, hWnd, (HMENU)IDC_BUTTON3, hInst, NULL);
+        hTurn = CreateWindow(_T("button"), _T("턴 종료"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_CLIPCHILDREN
+            , rc.right / 2 + 80, rc.top + 300, 120, 50, hWnd, (HMENU)IDC_BUTTON2, hInst, NULL);
+        hMoney[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
             , rc.left + 250, rc.bottom - 360, 200, 25, hWnd, (HMENU)IDC_EDIT1, hInst, NULL);
-        hMoney[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
+        hMoney[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
             , rc.right - 420, rc.bottom - 360, 200, 25, hWnd, (HMENU)IDC_EDIT2, hInst, NULL);
+        hCheck[0] = CreateWindow(_T("button"), _T("땅 "), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 215, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK1, hInst, NULL);
+        hCheck[1] = CreateWindow(_T("button"), _T("별장"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 275, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK2, hInst, NULL);
+        hCheck[2] = CreateWindow(_T("button"), _T("빌딩"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 335, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK3, hInst, NULL);
+        hCheck[3] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 395, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK4, hInst, NULL);
+        hCheck[4] = CreateWindow(_T("button"), _T("땅 "), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 555, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK5, hInst, NULL);
+        hCheck[5] = CreateWindow(_T("button"), _T("별장"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 615, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK6, hInst, NULL);
+        hCheck[6] = CreateWindow(_T("button"), _T("빌딩"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 675, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK7, hInst, NULL);
+        hCheck[7] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+            , rc.left + 735, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK8, hInst, NULL);
 
-        wsprintf(str, _T("%d 원"), player1.getMoney());
-        SetDlgItemText(hWnd,IDC_EDIT1,str);
-        wsprintf(str, _T("%d 원"), player2.getMoney());
-        SetDlgItemText(hWnd, IDC_EDIT2, str);
+
+
+
         break;
     case WM_TIMER:
         switch (wParam)
@@ -229,6 +265,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 
+
             SelectObject(mem1dc, oldBit1);
             SelectObject(mem2dc, oldBit2);
             
@@ -244,6 +281,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             break;
         }
         InvalidateRect(hWnd, NULL, false);
+
         break;
     case WM_COMMAND:
         {
@@ -251,6 +289,59 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // 메뉴 선택을 구문 분석합니다:
             switch (wmId)
             {
+            case IDC_BUTTON1:
+                dice = rand() % 5 + 1;
+                if (turn == 1)
+                {
+                    temp = player1.getPosition();
+                    temp += dice;
+                    if (temp > 39)
+                    {
+                        temp %= 40;
+                    }
+                    player1.setPosition(temp);
+
+                    turn = 2;
+                }
+                else if (turn == 2)
+                {
+                    temp = player1.getPosition();
+                    temp += dice;
+                    if (temp > 39)
+                    {
+                        temp %= 40;
+                    }
+                    player2.setPosition(temp);
+                    turn = 1;
+                }
+                break;
+            case IDC_BUTTON3:
+                temp = 0;
+                if (turn == 1)
+                {
+                    if (SendMessage(hCheck[0], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(),0);
+                    if (SendMessage(hCheck[1], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 1);
+                    if (SendMessage(hCheck[2], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 2);
+                    if (SendMessage(hCheck[3], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 3);
+                    player1.setMoney(player1.getMoney() - temp);
+                }
+                else if (turn == 2)
+                {
+                    if (SendMessage(hCheck[4], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 4);
+                    if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 5);
+                    if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 6);
+                    if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED)
+                        temp += build.getPrice(player1.getPosition(), 7);
+                    player2.setMoney(player2.getMoney() - temp);
+                }
+                break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
@@ -272,6 +363,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             oldBit1 = (HBITMAP)SelectObject(mem1dc, hbit1);
             BitBlt(hdc, rc.left, rc.top, rc.right, rc.bottom, mem1dc, 0, 0, SRCCOPY);
+
+            wsprintf(str, _T("%d 원"), player1.getMoney());
+            SetDlgItemText(hWnd, IDC_EDIT1, str);
+            wsprintf(str, _T("%d 원"), player2.getMoney());
+            SetDlgItemText(hWnd, IDC_EDIT2, str);
 
             SelectObject(mem1dc, oldBit1);
             DeleteDC(mem1dc);
