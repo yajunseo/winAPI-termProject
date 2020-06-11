@@ -148,6 +148,8 @@ int boardArr2[40][2];
 #define IDC_BUTTON3 210
 #define IDC_BUTTON4 211
 int turn = 1;
+int boardOwn[40][4];
+bool dropDice = false;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -291,7 +293,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             {
             case IDC_BUTTON1:
                 dice = rand() % 5 + 1;
-                if (turn == 1)
+                if (turn == 1 && !dropDice)
                 {
                     temp = player1.getPosition();
                     temp += dice;
@@ -300,10 +302,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         temp %= 40;
                     }
                     player1.setPosition(temp);
-
-                    turn = 2;
+                    dropDice = true;
+                
                 }
-                else if (turn == 2)
+                else if (turn == 2 && !dropDice)
                 {
                     temp = player1.getPosition();
                     temp += dice;
@@ -312,34 +314,79 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         temp %= 40;
                     }
                     player2.setPosition(temp);
-                    turn = 1;
+                    dropDice = true;
                 }
+                break;
+            case IDC_BUTTON2:
+                CheckDlgButton(hWnd, IDC_CHECK1, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK2, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK3, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK4, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK5, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK6, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK7, BST_UNCHECKED);
+                CheckDlgButton(hWnd, IDC_CHECK8, BST_UNCHECKED);
+                if (turn == 1)
+                    turn = 2;
+                else
+                    turn = 1;
+                dropDice = false;
                 break;
             case IDC_BUTTON3:
                 temp = 0;
                 if (turn == 1)
                 {
-                    if (SendMessage(hCheck[0], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(),0);
-                    if (SendMessage(hCheck[1], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 1);
-                    if (SendMessage(hCheck[2], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 2);
-                    if (SendMessage(hCheck[3], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 3);
-                    player1.setMoney(player1.getMoney() - temp);
+                    if (boardOwn[player1.getPosition()][0] != 2)
+                    {
+                        if (SendMessage(hCheck[0], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][0] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 0);
+                            boardOwn[player1.getPosition()][0] = 1;
+                        }
+                        if (SendMessage(hCheck[1], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][1] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 1);
+                            boardOwn[player1.getPosition()][1] = 1;
+                        }
+                        if (SendMessage(hCheck[2], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][2] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 2);
+                            boardOwn[player1.getPosition()][2] = 1;
+                        }
+                        if (SendMessage(hCheck[3], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][3] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 3);
+                            boardOwn[player1.getPosition()][3] = 1;
+                        }
+                        player1.setMoney(player1.getMoney() - temp);
+                    }
                 }
                 else if (turn == 2)
                 {
-                    if (SendMessage(hCheck[4], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 4);
-                    if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 5);
-                    if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 6);
-                    if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED)
-                        temp += build.getPrice(player1.getPosition(), 7);
-                    player2.setMoney(player2.getMoney() - temp);
+                    if (boardOwn[player1.getPosition()][0] != 1)
+                    {
+                        if (SendMessage(hCheck[4], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][0] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 4);
+                            boardOwn[player2.getPosition()][0] = 1;
+                        }
+                        if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][1] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 5);
+                            boardOwn[player2.getPosition()][0] = 1;
+                        }
+                        if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][2] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 6);
+                            boardOwn[player2.getPosition()][0] = 1;
+                        }
+                        if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][3] == 0)
+                        {
+                            temp += build.getPrice(player1.getPosition(), 7);
+                            boardOwn[player2.getPosition()][0] = 1;
+                        }
+                        player2.setMoney(player2.getMoney() - temp);
+                    }
                 }
                 break;
             case IDM_ABOUT:
