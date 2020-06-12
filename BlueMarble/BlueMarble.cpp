@@ -135,7 +135,7 @@ int boardArr2[40][2];
 #define IDC_BUTTON2 201
 #define IDC_EDIT1 202
 #define IDC_EDIT2 203
-#define IDC_EDIT2 203
+
 #define IDC_CHECK1 204
 #define IDC_CHECK2 205
 #define IDC_CHECK3 206
@@ -147,6 +147,10 @@ int boardArr2[40][2];
 
 #define IDC_BUTTON3 210
 #define IDC_BUTTON4 211
+#define IDC_EDIT3 214
+#define IDC_EDIT4 215
+#define IDC_EDIT5 216
+#define IDC_EDIT6 217
 int turn = 1;
 int boardOwn[40][4];
 bool dropDice = false;
@@ -155,18 +159,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     srand((DWORD)GetTickCount());
     HDC hdc, mem1dc, mem2dc;
-    static HBITMAP hbit1, hBack, hChar[4], oldBit1, oldBit2;
+    static HBITMAP hbit1, hBack, hChar[4], oldBit1, oldBit2, hBuild[6];
     static RECT rc;
     BITMAP bm;
     static int bitIndex = 0;
-    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy;
+    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy, hPrice[4];
     float boardWidth;
     float boardHeight;
     TCHAR str[100];
     int dice;
     int temp;
     CBuild build;
-
+    int a;
     switch (message)
     {
     case WM_CREATE:
@@ -177,7 +181,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         hChar[1] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP3));
         hChar[2] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP4));
         hChar[3] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP5));
-        
+        hBuild[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP6));
+        hBuild[1] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP7));
+        hBuild[2] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP9));
+        hBuild[3] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP11));
+        hBuild[4] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP8));
+        hBuild[5] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP10));
+
         boardWidth = (rc.right - rc.left - 200) / 10;
         boardHeight = (rc.bottom - rc.top - 200) / 10;
 
@@ -235,7 +245,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             , rc.left + 675, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK7, hInst, NULL);
         hCheck[7] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
             , rc.left + 735, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK8, hInst, NULL);
-
+        hPrice[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+            , rc.left + 200, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT3, hInst, NULL);
+        hPrice[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+            , rc.left + 350, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT4, hInst, NULL);
+        hPrice[2] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+            , rc.left + 500, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT5, hInst, NULL);
+        hPrice[3] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+            , rc.left + 650, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT6, hInst, NULL);
 
 
 
@@ -244,6 +261,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         switch (wParam)
         {
         case 1:
+            build.setRC(rc.left, rc.top, rc.right, rc.bottom);
             hdc = GetDC(hWnd);
             if (hbit1 == NULL)
                 hbit1 = CreateCompatibleBitmap(hdc, rc.right, rc.bottom);
@@ -255,8 +273,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             oldBit2 = (HBITMAP)SelectObject(mem2dc, hBack);
 
             GetObject(hBack, sizeof(BITMAP), &bm);
-            StretchBlt(mem1dc, rc.left, rc.top, rc.right, rc.bottom, mem2dc,0,0, bm.bmWidth, bm.bmHeight, SRCCOPY);
-            
+            StretchBlt(mem1dc, rc.left, rc.top, rc.right, rc.bottom, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+
             oldBit2 = (HBITMAP)SelectObject(mem2dc, hChar[bitIndex]);
             GetObject(hChar[bitIndex], sizeof(BITMAP), &bm);
             TransparentBlt(mem1dc, boardArr1[player1.getPosition()][0], boardArr1[player1.getPosition()][1], 60, 60, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 0));
@@ -265,7 +283,30 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             GetObject(hChar[bitIndex], sizeof(BITMAP), &bm);
             TransparentBlt(mem1dc, boardArr2[player2.getPosition()][0], boardArr2[player2.getPosition()][1], 60, 60, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 0));
 
+            for (int i = 0; i < 40; i++)
+            {
+                oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[0]);
+                GetObject(hBuild[0], sizeof(BITMAP), &bm);
+                TransparentBlt(mem1dc, build.getVillaX(i), build.getVillaY(i), 20, 20, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
 
+                oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[1]);
+                GetObject(hBuild[1], sizeof(BITMAP), &bm);
+                TransparentBlt(mem1dc, build.getBuildingX(i), build.getBuildingY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+
+                oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[2]);
+                GetObject(hBuild[2], sizeof(BITMAP), &bm);
+                TransparentBlt(mem1dc, build.getHotelX(i), build.getHotelY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+
+
+                if(boardOwn[i][0] == 1)
+                {
+
+                }
+                else if (boardOwn[i][0] == 2)
+                {
+
+                }
+            }
 
 
             SelectObject(mem1dc, oldBit1);
@@ -303,7 +344,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     }
                     player1.setPosition(temp);
                     dropDice = true;
-                
+                    
+                    wsprintf(str, _T("땅  : %d 원"), build.getPrice(player1.getPosition(), 0));
+                    SetDlgItemText(hWnd, IDC_EDIT3, str);
+                    wsprintf(str, _T("별장: %d 원"), build.getPrice(player1.getPosition(), 1));
+                    SetDlgItemText(hWnd, IDC_EDIT4, str);
+                    wsprintf(str, _T("빌딩: %d 원"), build.getPrice(player1.getPosition(), 2));
+                    SetDlgItemText(hWnd, IDC_EDIT5, str);
+                    wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
+                    SetDlgItemText(hWnd, IDC_EDIT6, str);
                 }
                 else if (turn == 2 && !dropDice)
                 {
@@ -315,6 +364,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     }
                     player2.setPosition(temp);
                     dropDice = true;
+
+                    wsprintf(str, _T("땅  : %d 원"), build.getPrice(player1.getPosition(), 0));
+                    SetDlgItemText(hWnd, IDC_EDIT3, str);
+                    wsprintf(str, _T("별장: %d 원"), build.getPrice(player1.getPosition(), 1));
+                    SetDlgItemText(hWnd, IDC_EDIT4, str);
+                    wsprintf(str, _T("빌딩: %d 원"), build.getPrice(player1.getPosition(), 2));
+                    SetDlgItemText(hWnd, IDC_EDIT5, str);
+                    wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
+                    SetDlgItemText(hWnd, IDC_EDIT6, str);
                 }
                 break;
             case IDC_BUTTON2:
@@ -415,7 +473,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             SetDlgItemText(hWnd, IDC_EDIT1, str);
             wsprintf(str, _T("%d 원"), player2.getMoney());
             SetDlgItemText(hWnd, IDC_EDIT2, str);
+           
 
+            
             SelectObject(mem1dc, oldBit1);
             DeleteDC(mem1dc);
             EndPaint(hWnd, &ps);

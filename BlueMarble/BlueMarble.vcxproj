@@ -165,10 +165,17 @@
   <ItemGroup>
     <Image Include="BlueMarble.ico" />
     <Image Include="Image\BackGround\BG.bmp" />
+    <Image Include="Image\Build\building1.bmp" />
+    <Image Include="Image\Build\building2.bmp" />
+    <Image Include="Image\Build\hotel1.bmp" />
+    <Image Include="Image\Build\hotel2.bmp" />
+    <Image Include="Image\Build\villa1.bmp" />
+    <Image Include="Image\Build\villa2.bmp" />
     <Image Include="Image\Character\1.bmp" />
     <Image Include="Image\Character\2.bmp" />
     <Image Include="Image\Character\3.bmp" />
     <Image Include="Image\Character\4.bmp" />
+    <Image Include="image\character\bitmap7.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

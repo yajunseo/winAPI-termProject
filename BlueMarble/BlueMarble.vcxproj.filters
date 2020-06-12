@@ -72,5 +72,26 @@
     <Image Include="Image\Character\4.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Image\Build\villa1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="image\character\bitmap7.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Build\building1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Build\building2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Build\hotel1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Build\hotel2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Build\villa2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
