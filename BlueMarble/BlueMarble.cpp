@@ -170,7 +170,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int dice;
     int temp;
     CBuild build;
-    int a;
+    int turnMoney = 300;
     switch (message)
     {
     case WM_CREATE:
@@ -285,26 +285,51 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
             for (int i = 0; i < 40; i++)
             {
-                oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[0]);
-                GetObject(hBuild[0], sizeof(BITMAP), &bm);
-                TransparentBlt(mem1dc, build.getVillaX(i), build.getVillaY(i), 20, 20, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
-
-                oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[1]);
-                GetObject(hBuild[1], sizeof(BITMAP), &bm);
-                TransparentBlt(mem1dc, build.getBuildingX(i), build.getBuildingY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
-
-                oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[2]);
-                GetObject(hBuild[2], sizeof(BITMAP), &bm);
-                TransparentBlt(mem1dc, build.getHotelX(i), build.getHotelY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
-
-
                 if(boardOwn[i][0] == 1)
                 {
+                    if (boardOwn[i][1] == 1)
+                    {
+                        oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[0]);
+                        GetObject(hBuild[0], sizeof(BITMAP), &bm);
+                        TransparentBlt(mem1dc, build.getVillaX(i), build.getVillaY(i), 20, 20, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                    }
 
+                    if (boardOwn[i][2] == 1)
+                    {
+                        oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[1]);
+                        GetObject(hBuild[1], sizeof(BITMAP), &bm);
+                        TransparentBlt(mem1dc, build.getBuildingX(i), build.getBuildingY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                    }
+
+                    if (boardOwn[i][3] == 1)
+                    {
+                        oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[2]);
+                        GetObject(hBuild[2], sizeof(BITMAP), &bm);
+                        TransparentBlt(mem1dc, build.getHotelX(i), build.getHotelY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                    }
                 }
                 else if (boardOwn[i][0] == 2)
                 {
+                    if (boardOwn[i][1] == 1)
+                    {
+                        oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[3]);
+                        GetObject(hBuild[3], sizeof(BITMAP), &bm);
+                        TransparentBlt(mem1dc, build.getVillaX(i), build.getVillaY(i), 20, 20, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                    }
 
+                    if (boardOwn[i][2] == 1)
+                    {
+                        oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[4]);
+                        GetObject(hBuild[4], sizeof(BITMAP), &bm);
+                        TransparentBlt(mem1dc, build.getBuildingX(i), build.getBuildingY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                    }
+
+                    if (boardOwn[i][3] == 1)
+                    {
+                        oldBit2 = (HBITMAP)SelectObject(mem2dc, hBuild[5]);
+                        GetObject(hBuild[5], sizeof(BITMAP), &bm);
+                        TransparentBlt(mem1dc, build.getHotelX(i), build.getHotelY(i), 25, 25, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                    }
                 }
             }
 
@@ -340,6 +365,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     temp += dice;
                     if (temp > 39)
                     {
+                        player1.setMoney(player1.getMoney() + turnMoney);
                         temp %= 40;
                     }
                     player1.setPosition(temp);
@@ -353,6 +379,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     SetDlgItemText(hWnd, IDC_EDIT5, str);
                     wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
                     SetDlgItemText(hWnd, IDC_EDIT6, str);
+
+                    if (boardOwn[player1.getPosition()][0] == 2)
+                    {
+                        temp = 0;
+                        if (boardOwn[player1.getPosition()][1] == 1)
+                            temp += build.getPrice(player1.getPosition(), 1);
+
+                        if (boardOwn[player1.getPosition()][2] == 1)
+                            temp += build.getPrice(player1.getPosition(), 2);
+
+                        if (boardOwn[player1.getPosition()][3] == 1)
+                            temp += build.getPrice(player1.getPosition(), 3);
+
+                        player1.setMoney(player1.getMoney() - temp);
+                    }
                 }
                 else if (turn == 2 && !dropDice)
                 {
@@ -360,6 +401,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     temp += dice;
                     if (temp > 39)
                     {
+                        player2.setMoney(player2.getMoney() + turnMoney);
                         temp %= 40;
                     }
                     player2.setPosition(temp);
@@ -373,6 +415,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     SetDlgItemText(hWnd, IDC_EDIT5, str);
                     wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
                     SetDlgItemText(hWnd, IDC_EDIT6, str);
+
+                    if (boardOwn[player2.getPosition()][0] == 1)
+                    {
+                        temp = 0;
+                        if (boardOwn[player2.getPosition()][1] == 1)
+                            temp += build.getPrice(player2.getPosition(), 1);
+
+                        if (boardOwn[player2.getPosition()][2] == 1)
+                            temp += build.getPrice(player2.getPosition(), 2);
+
+                        if (boardOwn[player2.getPosition()][3] == 1)
+                            temp += build.getPrice(player2.getPosition(), 3);
+
+                        player2.setMoney(player2.getMoney() - temp);
+                    }
                 }
                 break;
             case IDC_BUTTON2:
@@ -421,27 +478,27 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 }
                 else if (turn == 2)
                 {
-                    if (boardOwn[player1.getPosition()][0] != 1)
+                    if (boardOwn[player2.getPosition()][0] != 1)
                     {
                         if (SendMessage(hCheck[4], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][0] == 0)
                         {
-                            temp += build.getPrice(player1.getPosition(), 4);
-                            boardOwn[player2.getPosition()][0] = 1;
+                            temp += build.getPrice(player2.getPosition(), 0);
+                            boardOwn[player2.getPosition()][0] = 2;
                         }
                         if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][1] == 0)
                         {
-                            temp += build.getPrice(player1.getPosition(), 5);
-                            boardOwn[player2.getPosition()][0] = 1;
+                            temp += build.getPrice(player2.getPosition(), 1);
+                            boardOwn[player2.getPosition()][1] = 1;
                         }
                         if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][2] == 0)
                         {
-                            temp += build.getPrice(player1.getPosition(), 6);
-                            boardOwn[player2.getPosition()][0] = 1;
+                            temp += build.getPrice(player2.getPosition(), 2);
+                            boardOwn[player2.getPosition()][2] = 1;
                         }
                         if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][3] == 0)
                         {
-                            temp += build.getPrice(player1.getPosition(), 7);
-                            boardOwn[player2.getPosition()][0] = 1;
+                            temp += build.getPrice(player2.getPosition(), 3);
+                            boardOwn[player2.getPosition()][3] = 1;
                         }
                         player2.setMoney(player2.getMoney() - temp);
                     }
