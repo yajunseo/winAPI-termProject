@@ -104,7 +104,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW| WS_CLIPCHILDREN,
       0,0, ScreenWidth, ScreenHeight, nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
@@ -159,7 +159,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     srand((DWORD)GetTickCount());
     HDC hdc, mem1dc, mem2dc;
-    static HBITMAP hbit1, hBack, hChar[4], oldBit1, oldBit2, hBuild[6];
+    static HBITMAP hbit1, hBack, hChar[4], oldBit1, oldBit2, hBuild[6], hDiceBit[6];
     static RECT rc;
     BITMAP bm;
     static int bitIndex = 0;
@@ -167,7 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     float boardWidth;
     float boardHeight;
     TCHAR str[100];
-    int dice;
+    static int dice, dice2;
     int temp;
     CBuild build;
     int turnMoney = 300;
@@ -187,6 +187,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         hBuild[3] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP11));
         hBuild[4] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP8));
         hBuild[5] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP10));
+        hDiceBit[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP12));
+        hDiceBit[1] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP13));
+        hDiceBit[2] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP14));
+        hDiceBit[3] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP15));
+        hDiceBit[4] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP16));
+        hDiceBit[5] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP17));
 
         boardWidth = (rc.right - rc.left - 200) / 10;
         boardHeight = (rc.bottom - rc.top - 200) / 10;
@@ -223,41 +229,42 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             , rc.right / 2 - 200, rc.top + 300, 120, 50, hWnd, (HMENU)IDC_BUTTON1, hInst, NULL);
         hBuy = CreateWindow(_T("button"), _T("구입하기"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
             , rc.right / 2 - 60, rc.top + 300, 120, 50, hWnd, (HMENU)IDC_BUTTON3, hInst, NULL);
-        hTurn = CreateWindow(_T("button"), _T("턴 종료"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | WS_CLIPCHILDREN
+        hTurn = CreateWindow(_T("button"), _T("턴 종료"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON 
             , rc.right / 2 + 80, rc.top + 300, 120, 50, hWnd, (HMENU)IDC_BUTTON2, hInst, NULL);
-        hMoney[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+        hMoney[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.left + 250, rc.bottom - 360, 200, 25, hWnd, (HMENU)IDC_EDIT1, hInst, NULL);
-        hMoney[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+        hMoney[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.right - 420, rc.bottom - 360, 200, 25, hWnd, (HMENU)IDC_EDIT2, hInst, NULL);
-        hCheck[0] = CreateWindow(_T("button"), _T("땅 "), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[0] = CreateWindow(_T("button"), _T("땅 "), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 215, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK1, hInst, NULL);
-        hCheck[1] = CreateWindow(_T("button"), _T("별장"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[1] = CreateWindow(_T("button"), _T("별장"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 275, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK2, hInst, NULL);
-        hCheck[2] = CreateWindow(_T("button"), _T("빌딩"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[2] = CreateWindow(_T("button"), _T("빌딩"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 335, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK3, hInst, NULL);
-        hCheck[3] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[3] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 395, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK4, hInst, NULL);
-        hCheck[4] = CreateWindow(_T("button"), _T("땅 "), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[4] = CreateWindow(_T("button"), _T("땅 "), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 555, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK5, hInst, NULL);
-        hCheck[5] = CreateWindow(_T("button"), _T("별장"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[5] = CreateWindow(_T("button"), _T("별장"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 615, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK6, hInst, NULL);
-        hCheck[6] = CreateWindow(_T("button"), _T("빌딩"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[6] = CreateWindow(_T("button"), _T("빌딩"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 675, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK7, hInst, NULL);
-        hCheck[7] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX | WS_CLIPCHILDREN
+        hCheck[7] = CreateWindow(_T("button"), _T("호텔"), WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX 
             , rc.left + 735, rc.bottom - 300, 60, 25, hWnd, (HMENU)IDC_CHECK8, hInst, NULL);
-        hPrice[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+        hPrice[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.left + 200, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT3, hInst, NULL);
-        hPrice[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+        hPrice[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.left + 350, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT4, hInst, NULL);
-        hPrice[2] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+        hPrice[2] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.left + 500, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT5, hInst, NULL);
-        hPrice[3] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT | WS_CLIPCHILDREN
+        hPrice[3] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.left + 650, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT6, hInst, NULL);
 
 
-
+        InvalidateRect(hWnd, NULL, true);
         break;
     case WM_TIMER:
+
         switch (wParam)
         {
         case 1:
@@ -332,6 +339,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     }
                 }
             }
+            for(int i=1;i<=6;i++)
+            {
+                if (dice == i)
+                {
+                    oldBit2 = (HBITMAP)SelectObject(mem2dc, hDiceBit[i - 1]);
+                    GetObject(hDiceBit[i - 1], sizeof(BITMAP), &bm);
+                    TransparentBlt(mem1dc, rc.left + 400, rc.top + 200, 75, 75, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                }
+
+                if (dice2 == i)
+                {
+                    oldBit2 = (HBITMAP)SelectObject(mem2dc, hDiceBit[i - 1]);
+                    GetObject(hDiceBit[i - 1], sizeof(BITMAP), &bm);
+                    TransparentBlt(mem1dc, rc.left + 530, rc.top + 200, 75, 75, mem2dc, 0, 0, bm.bmWidth, bm.bmHeight, RGB(0, 0, 255));
+                }
+            }
+
 
 
             SelectObject(mem1dc, oldBit1);
@@ -358,11 +382,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
             case IDC_BUTTON1:
-                dice = rand() % 5 + 1;
+                dice = rand() % 6 + 1;
+                dice2 = rand() % 6 + 1;
                 if (turn == 1 && !dropDice)
                 {
                     temp = player1.getPosition();
-                    temp += dice;
+                    temp += (dice + dice2);
                     if (temp > 39)
                     {
                         player1.setMoney(player1.getMoney() + turnMoney);
@@ -393,12 +418,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             temp += build.getPrice(player1.getPosition(), 3);
 
                         player1.setMoney(player1.getMoney() - temp);
+
+                        if (player1.getMoney() < 0)
+                        {
+                            MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
+                        }
                     }
                 }
                 else if (turn == 2 && !dropDice)
                 {
                     temp = player1.getPosition();
-                    temp += dice;
+                    temp += (dice + dice2);
                     if (temp > 39)
                     {
                         player2.setMoney(player2.getMoney() + turnMoney);
@@ -429,6 +459,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             temp += build.getPrice(player2.getPosition(), 3);
 
                         player2.setMoney(player2.getMoney() - temp);
+
+                        if (player2.getMoney() < 0)
+                        {
+                            MessageBox(hWnd, _T("플레이어1 승리"), _T("게임 종료"), MB_OK);
+                        }
                     }
                 }
                 break;

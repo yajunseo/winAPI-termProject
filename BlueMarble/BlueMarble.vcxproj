@@ -176,6 +176,12 @@
     <Image Include="Image\Character\3.bmp" />
     <Image Include="Image\Character\4.bmp" />
     <Image Include="image\character\bitmap7.bmp" />
+    <Image Include="Image\Dice\Dice1.bmp" />
+    <Image Include="Image\Dice\Dice2.bmp" />
+    <Image Include="Image\Dice\Dice3.bmp" />
+    <Image Include="Image\Dice\Dice4.bmp" />
+    <Image Include="Image\Dice\Dice5.bmp" />
+    <Image Include="Image\Dice\Dice6.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

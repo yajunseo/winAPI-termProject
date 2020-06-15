@@ -93,5 +93,23 @@
     <Image Include="Image\Build\villa2.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="Image\Dice\Dice1.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Dice\Dice2.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Dice\Dice3.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Dice\Dice4.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Dice\Dice5.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="Image\Dice\Dice6.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>
