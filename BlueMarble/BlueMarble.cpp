@@ -6,6 +6,7 @@
 #include "Resource.h"
 #include "CPlayer.h"
 #include "CBuild.h"
+#include <mmsystem.h>
 
 #pragma comment(lib, "Msimg32.lib")
 
@@ -175,6 +176,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
     case WM_CREATE:
         GetClientRect(hWnd, &rc);
+        PlaySound(_T("Sound"), NULL, SND_ASYNC | SND_LOOP);
         SetTimer(hWnd, 1, 150, NULL);
         hBack = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP1));
         hChar[0] = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP2));
