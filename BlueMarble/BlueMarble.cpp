@@ -152,6 +152,9 @@ int boardArr2[40][2];
 #define IDC_EDIT4 215
 #define IDC_EDIT5 216
 #define IDC_EDIT6 217
+
+#define IDC_BUTTON5 218
+#define IDC_EDIT7 219
 int turn = 1;
 int boardOwn[40][4];
 bool dropDice = false;
@@ -164,7 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     static RECT rc;
     BITMAP bm;
     static int bitIndex = 0;
-    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy, hPrice[4];
+    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy, hPrice[4], hBuyOther, hCurrentTurn;
     float boardWidth;
     float boardHeight;
     TCHAR str[100];
@@ -172,6 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     int temp;
     CBuild build;
     int turnMoney = 300;
+    static bool buyChance = false;
     switch (message)
     {
     case WM_CREATE:
@@ -261,8 +265,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             , rc.left + 500, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT5, hInst, NULL);
         hPrice[3] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT 
             , rc.left + 650, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT6, hInst, NULL);
-
-
+        hCurrentTurn = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
+            , rc.right/2- 50, rc.top + 400, 100, 25, hWnd, (HMENU)IDC_EDIT7, hInst, NULL);
+        hBuy = CreateWindow(_T("button"), _T("인수하기(+500)"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
+            , rc.right / 2 - 60, rc.bottom - 250, 120, 50, hWnd, (HMENU)IDC_BUTTON5, hInst, NULL);
         InvalidateRect(hWnd, NULL, true);
         break;
     case WM_TIMER:
@@ -409,6 +415,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     if (boardOwn[player1.getPosition()][0] == 2)
                     {
+                        buyChance = true;
+
                         temp = 0;
                         if (boardOwn[player1.getPosition()][1] == 1)
                             temp += build.getPrice(player1.getPosition(), 1);
@@ -424,6 +432,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                         if (player1.getMoney() < 0)
                         {
                             MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
+                            DestroyWindow(hWnd);
                         }
                     }
                 }
@@ -450,6 +459,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
                     if (boardOwn[player2.getPosition()][0] == 1)
                     {
+                        buyChance = true;
+
                         temp = 0;
                         if (boardOwn[player2.getPosition()][1] == 1)
                             temp += build.getPrice(player2.getPosition(), 1);
@@ -478,6 +489,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 CheckDlgButton(hWnd, IDC_CHECK6, BST_UNCHECKED);
                 CheckDlgButton(hWnd, IDC_CHECK7, BST_UNCHECKED);
                 CheckDlgButton(hWnd, IDC_CHECK8, BST_UNCHECKED);
+                buyChance = false;
                 if (turn == 1)
                     turn = 2;
                 else
@@ -485,64 +497,149 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 dropDice = false;
                 break;
             case IDC_BUTTON3:
-                temp = 0;
+                temp = player1.getPosition();
                 if (turn == 1)
                 {
-                    if (boardOwn[player1.getPosition()][0] != 2)
+                    if (temp == 2 || temp == 7 || temp == 12 || temp == 17 || temp == 22 || temp == 35)
                     {
-                        if (SendMessage(hCheck[0], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][0] == 0)
+                        player1.setMoney(player1.getMoney() + 1000);
+                    }
+                    else if (temp == 20 || temp == 38)
+                    {
+                        player1.setMoney(player1.getMoney() - 2000);
+                        if (player1.getMoney() < 0)
                         {
-                            temp += build.getPrice(player1.getPosition(), 0);
-                            boardOwn[player1.getPosition()][0] = 1;
+                            MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
+                            DestroyWindow(hWnd);
                         }
-                        if (SendMessage(hCheck[1], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][1] == 0)
+                    }
+                    if (temp != 0 && temp != 2 && temp != 7 && temp != 10 && temp != 12 && temp != 17 && temp != 20 && temp != 22 && temp != 30 && temp != 35 && temp != 38)
+                    {
+                        temp = 0;
+                        if (boardOwn[player1.getPosition()][0] != 2)
                         {
-                            temp += build.getPrice(player1.getPosition(), 1);
-                            boardOwn[player1.getPosition()][1] = 1;
+                            if (SendMessage(hCheck[0], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][0] == 0)
+                            {
+                                temp += build.getPrice(player1.getPosition(), 0);
+                                boardOwn[player1.getPosition()][0] = 1;
+                            }
+                            if (SendMessage(hCheck[1], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][1] == 0)
+                            {
+                                temp += build.getPrice(player1.getPosition(), 1);
+                                boardOwn[player1.getPosition()][1] = 1;
+                            }
+                            if (SendMessage(hCheck[2], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][2] == 0)
+                            {
+                                temp += build.getPrice(player1.getPosition(), 2);
+                                boardOwn[player1.getPosition()][2] = 1;
+                            }
+                            if (SendMessage(hCheck[3], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][3] == 0)
+                            {
+                                temp += build.getPrice(player1.getPosition(), 3);
+                                boardOwn[player1.getPosition()][3] = 1;
+                            }
+                            player1.setMoney(player1.getMoney() - temp);
                         }
-                        if (SendMessage(hCheck[2], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][2] == 0)
-                        {
-                            temp += build.getPrice(player1.getPosition(), 2);
-                            boardOwn[player1.getPosition()][2] = 1;
-                        }
-                        if (SendMessage(hCheck[3], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][3] == 0)
-                        {
-                            temp += build.getPrice(player1.getPosition(), 3);
-                            boardOwn[player1.getPosition()][3] = 1;
-                        }
-                        player1.setMoney(player1.getMoney() - temp);
                     }
                 }
                 else if (turn == 2)
                 {
-                    if (boardOwn[player2.getPosition()][0] != 1)
+                    temp = player2.getPosition();
+                    if (temp == 2 || temp == 7 || temp == 12 || temp == 17 || temp == 22 || temp == 35)
                     {
-                        if (SendMessage(hCheck[4], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][0] == 0)
+                        player2.setMoney(player2.getMoney() + 1000);
+                    }
+                    else if (temp == 20 || temp == 38)
+                    {
+                        player2.setMoney(player2.getMoney() - 2000);
+                        if (player2.getMoney() < 0)
                         {
-                            temp += build.getPrice(player2.getPosition(), 0);
-                            boardOwn[player2.getPosition()][0] = 2;
+                            MessageBox(hWnd, _T("플레이어1 승리"), _T("게임 종료"), MB_OK);
+                            DestroyWindow(hWnd);
                         }
-                        if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][1] == 0)
+                    }
+                    if (temp != 0 && temp != 2 && temp != 7 && temp != 10 && temp != 12 && temp != 17 && temp != 20 && temp != 22 && temp != 30 && temp != 35 && temp != 38)
+                    {
+                        if (boardOwn[player2.getPosition()][0] != 1)
                         {
-                            temp += build.getPrice(player2.getPosition(), 1);
-                            boardOwn[player2.getPosition()][1] = 1;
+                            temp = 0;
+                            if (SendMessage(hCheck[4], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][0] == 0)
+                            {
+                                temp += build.getPrice(player2.getPosition(), 0);
+                                boardOwn[player2.getPosition()][0] = 2;
+                            }
+                            if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][1] == 0)
+                            {
+                                temp += build.getPrice(player2.getPosition(), 1);
+                                boardOwn[player2.getPosition()][1] = 1;
+                            }
+                            if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][2] == 0)
+                            {
+                                temp += build.getPrice(player2.getPosition(), 2);
+                                boardOwn[player2.getPosition()][2] = 1;
+                            }
+                            if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][3] == 0)
+                            {
+                                temp += build.getPrice(player2.getPosition(), 3);
+                                boardOwn[player2.getPosition()][3] = 1;
+                            }
+                            player2.setMoney(player2.getMoney() - temp);
                         }
-                        if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][2] == 0)
-                        {
-                            temp += build.getPrice(player2.getPosition(), 2);
-                            boardOwn[player2.getPosition()][2] = 1;
-                        }
-                        if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][3] == 0)
-                        {
-                            temp += build.getPrice(player2.getPosition(), 3);
-                            boardOwn[player2.getPosition()][3] = 1;
-                        }
-                        player2.setMoney(player2.getMoney() - temp);
                     }
                 }
+                temp = 0;
                 break;
             case IDM_ABOUT:
                 DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+                break;
+            case IDC_BUTTON5:
+                if (buyChance)
+                {
+                    if (turn == 1)
+                    {
+                        temp = 0;
+                        if (boardOwn[player1.getPosition()][1] == 1)
+                            temp += build.getPrice(player1.getPosition(), 1);
+
+                        if (boardOwn[player1.getPosition()][2] == 1)
+                            temp += build.getPrice(player1.getPosition(), 2);
+
+                        if (boardOwn[player1.getPosition()][3] == 1)
+                            temp += build.getPrice(player1.getPosition(), 3);
+
+                        if (player1.getMoney() <= (temp+500))
+                        {
+                            MessageBox(hWnd, _T("돈이 부족합니다"), _T("불가"), MB_OK);
+                            break;
+                        }
+                        player1.setMoney(player1.getMoney() - temp + 500);
+                        player2.setMoney(player2.getMoney() + temp + 500);
+                        boardOwn[player1.getPosition()][0] = 1;
+
+                    }
+                    else if (turn == 2)
+                    {
+                        temp = 0;
+                        if (boardOwn[player2.getPosition()][1] == 1)
+                            temp += build.getPrice(player2.getPosition(), 1);
+
+                        if (boardOwn[player2.getPosition()][2] == 1)
+                            temp += build.getPrice(player2.getPosition(), 2);
+
+                        if (boardOwn[player2.getPosition()][3] == 1)
+                            temp += build.getPrice(player2.getPosition(), 3);
+
+                        if (player2.getMoney() <= (temp + 500))
+                        {
+                            MessageBox(hWnd, _T("돈이 부족합니다"), _T("불가"), MB_OK);
+                            break;
+                        }
+                        player2.setMoney(player2.getMoney() - temp + 500);
+                        player1.setMoney(player1.getMoney() + temp + 500);
+                        boardOwn[player2.getPosition()][0] = 2;
+
+                    }
+                }
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
@@ -568,7 +665,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             wsprintf(str, _T("%d 원"), player2.getMoney());
             SetDlgItemText(hWnd, IDC_EDIT2, str);
            
-
+            wsprintf(str, _T("플레이어 %d 턴"),turn);
+            SetDlgItemText(hWnd, IDC_EDIT7, str);
             
             SelectObject(mem1dc, oldBit1);
             DeleteDC(mem1dc);

@@ -1,12 +1,12 @@
 ﻿  BlueMarble.cpp
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(199,49): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(200,50): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(204,45): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(206,46): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(212,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(214,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(218,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(220,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(226,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(228,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(203,49): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(204,50): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(208,45): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(210,46): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(216,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(218,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(222,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(224,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(230,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(232,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   BlueMarble.vcxproj -> C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\Debug\BlueMarble.exe

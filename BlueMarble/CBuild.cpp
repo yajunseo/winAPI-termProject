@@ -46,17 +46,81 @@ void CBuild::setRC(int l, int t, int r, int b)
 
 CBuild::CBuild()
 {
-
-
-	for (int i = 0; i < 40; i++)
+	for (int i = 0; i < 10; i++)
 	{
-		arr[i][0] = 200;
-		arr[i][1] = 400;
-		arr[i][2] = 600;
-		arr[i][3] = 800;
+		if (i != 0 && i != 2 && i != 7)
+		{
+			arr[i][0] = 600;
+			arr[i][1] = 1000;
+			arr[i][2] = 1400;
+			arr[i][3] = 1800;
+		}
+
+		else
+		{
+			arr[i][0] = 0;
+			arr[i][1] = 0;
+			arr[i][2] = 0;
+			arr[i][3] = 0;
+		}
 	}
 
+	for (int i = 10; i < 20; i++)
+	{
+		if (i != 10 && i != 12 && i != 17)
+		{
+			arr[i][0] = 1400;
+			arr[i][1] = 1800;
+			arr[i][2] = 2200;
+			arr[i][3] = 2600;
+		}
 
+		else
+		{
+			arr[i][0] = 0;
+			arr[i][1] = 0;
+			arr[i][2] = 0;
+			arr[i][3] = 0;
+		}
+	}
+
+	for (int i = 20; i < 30; i++)
+	{
+		if (i != 20 && i != 22)
+		{
+			arr[i][0] = 2200;
+			arr[i][1] = 2600;
+			arr[i][2] = 3000;
+			arr[i][3] = 3400;
+		}
+
+		else
+		{
+			arr[i][0] = 0;
+			arr[i][1] = 0;
+			arr[i][2] = 0;
+			arr[i][3] = 0;
+		}
+	}
+
+	for (int i = 30; i < 40; i++)
+	{
+		if (i != 35 && i != 38)
+		{
+			arr[i][0] = 3000;
+			arr[i][1] = 3400;
+			arr[i][2] = 3800;
+			arr[i][3] = 4200;
+		}
+
+		else
+		{
+			arr[i][0] = 0;
+			arr[i][1] = 0;
+			arr[i][2] = 0;
+			arr[i][3] = 0;
+		}
+	}
 }
 
 CBuild::~CBuild()
