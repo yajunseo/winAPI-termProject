@@ -155,19 +155,24 @@ int boardArr2[40][2];
 
 #define IDC_BUTTON5 218
 #define IDC_EDIT7 219
+#define IDC_EDIT8 220
+#define IDC_EDIT9 221
+#define IDC_EDIT10 222
 int turn = 1;
 int boardOwn[40][4];
 bool dropDice = false;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    static int island1 = 0, island2 = 0;
+    static int donation = 0;
     srand((DWORD)GetTickCount());
     HDC hdc, mem1dc, mem2dc;
     static HBITMAP hbit1, hBack, hChar[4], oldBit1, oldBit2, hBuild[6], hDiceBit[6];
     static RECT rc;
     BITMAP bm;
     static int bitIndex = 0;
-    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy, hPrice[4], hBuyOther, hCurrentTurn;
+    static HWND hDice, hTurn, hMoney[2], hCheck[8], hBuy, hPrice[4], hBuyOther, hCurrentTurn, hIsland[2], hDonation;
     float boardWidth;
     float boardHeight;
     TCHAR str[100];
@@ -267,6 +272,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             , rc.left + 650, rc.top + 360, 150, 25, hWnd, (HMENU)IDC_EDIT6, hInst, NULL);
         hCurrentTurn = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
             , rc.right/2- 50, rc.top + 400, 100, 25, hWnd, (HMENU)IDC_EDIT7, hInst, NULL);
+        hIsland[0] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
+            , rc.left+10, rc.bottom - 55, 100, 25, hWnd, (HMENU)IDC_EDIT8, hInst, NULL);
+        hIsland[1] = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
+            , rc.left+10, rc.bottom - 30 , 100, 25, hWnd, (HMENU)IDC_EDIT9, hInst, NULL);
+       hDonation = CreateWindow(_T("edit"), NULL, WS_CHILD | WS_VISIBLE | WS_BORDER | ES_MULTILINE | ES_RIGHT
+            , rc.left+10, rc.top + 10, 130, 25, hWnd, (HMENU)IDC_EDIT10, hInst, NULL);
         hBuy = CreateWindow(_T("button"), _T("인수하기(+500)"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON
             , rc.right / 2 - 60, rc.bottom - 250, 120, 50, hWnd, (HMENU)IDC_BUTTON5, hInst, NULL);
         InvalidateRect(hWnd, NULL, true);
@@ -394,91 +405,108 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 dice2 = rand() % 6 + 1;
                 if (turn == 1 && !dropDice)
                 {
-                    temp = player1.getPosition();
-                    temp += (dice + dice2);
-                    if (temp > 39)
+                    if (island1 > 0)
+                        island1--;
+                    else
                     {
-                        player1.setMoney(player1.getMoney() + turnMoney);
-                        temp %= 40;
-                    }
-                    player1.setPosition(temp);
-                    dropDice = true;
-                    
-                    wsprintf(str, _T("땅  : %d 원"), build.getPrice(player1.getPosition(), 0));
-                    SetDlgItemText(hWnd, IDC_EDIT3, str);
-                    wsprintf(str, _T("별장: %d 원"), build.getPrice(player1.getPosition(), 1));
-                    SetDlgItemText(hWnd, IDC_EDIT4, str);
-                    wsprintf(str, _T("빌딩: %d 원"), build.getPrice(player1.getPosition(), 2));
-                    SetDlgItemText(hWnd, IDC_EDIT5, str);
-                    wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
-                    SetDlgItemText(hWnd, IDC_EDIT6, str);
 
-                    if (boardOwn[player1.getPosition()][0] == 2)
-                    {
-                        buyChance = true;
-
-                        temp = 0;
-                        if (boardOwn[player1.getPosition()][1] == 1)
-                            temp += build.getPrice(player1.getPosition(), 1);
-
-                        if (boardOwn[player1.getPosition()][2] == 1)
-                            temp += build.getPrice(player1.getPosition(), 2);
-
-                        if (boardOwn[player1.getPosition()][3] == 1)
-                            temp += build.getPrice(player1.getPosition(), 3);
-
-                        player1.setMoney(player1.getMoney() - temp);
-
-                        if (player1.getMoney() < 0)
+                        temp = player1.getPosition();
+                        temp += (dice + dice2);
+                        if (temp > 39)
                         {
-                            MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
-                            DestroyWindow(hWnd);
+                            player1.setMoney(player1.getMoney() + turnMoney);
+                            temp %= 40;
                         }
+                        player1.setPosition(temp);
+                        dropDice = true;
+
+                        wsprintf(str, _T("땅  : %d 원"), build.getPrice(player1.getPosition(), 0));
+                        SetDlgItemText(hWnd, IDC_EDIT3, str);
+                        wsprintf(str, _T("별장: %d 원"), build.getPrice(player1.getPosition(), 1));
+                        SetDlgItemText(hWnd, IDC_EDIT4, str);
+                        wsprintf(str, _T("빌딩: %d 원"), build.getPrice(player1.getPosition(), 2));
+                        SetDlgItemText(hWnd, IDC_EDIT5, str);
+                        wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
+                        SetDlgItemText(hWnd, IDC_EDIT6, str);
+
+                        if (boardOwn[player1.getPosition()][0] == 2)
+                        {
+                            buyChance = true;
+
+                            temp = 0;
+                            if (boardOwn[player1.getPosition()][1] == 1)
+                                temp += build.getPrice(player1.getPosition(), 1);
+
+                            if (boardOwn[player1.getPosition()][2] == 1)
+                                temp += build.getPrice(player1.getPosition(), 2);
+
+                            if (boardOwn[player1.getPosition()][3] == 1)
+                                temp += build.getPrice(player1.getPosition(), 3);
+
+                            player1.setMoney(player1.getMoney() - temp);
+
+                            if (player1.getMoney() < 0)
+                            {
+                                MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
+                                DestroyWindow(hWnd);
+                            }
+                        }
+
+                        if (player1.getPosition() == 10)
+                            island1 = 3;
                     }
                 }
+
                 else if (turn == 2 && !dropDice)
                 {
-                    temp = player1.getPosition();
-                    temp += (dice + dice2);
-                    if (temp > 39)
-                    {
-                        player2.setMoney(player2.getMoney() + turnMoney);
-                        temp %= 40;
-                    }
-                    player2.setPosition(temp);
-                    dropDice = true;
-
-                    wsprintf(str, _T("땅  : %d 원"), build.getPrice(player1.getPosition(), 0));
-                    SetDlgItemText(hWnd, IDC_EDIT3, str);
-                    wsprintf(str, _T("별장: %d 원"), build.getPrice(player1.getPosition(), 1));
-                    SetDlgItemText(hWnd, IDC_EDIT4, str);
-                    wsprintf(str, _T("빌딩: %d 원"), build.getPrice(player1.getPosition(), 2));
-                    SetDlgItemText(hWnd, IDC_EDIT5, str);
-                    wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
-                    SetDlgItemText(hWnd, IDC_EDIT6, str);
-
-                    if (boardOwn[player2.getPosition()][0] == 1)
-                    {
-                        buyChance = true;
-
-                        temp = 0;
-                        if (boardOwn[player2.getPosition()][1] == 1)
-                            temp += build.getPrice(player2.getPosition(), 1);
-
-                        if (boardOwn[player2.getPosition()][2] == 1)
-                            temp += build.getPrice(player2.getPosition(), 2);
-
-                        if (boardOwn[player2.getPosition()][3] == 1)
-                            temp += build.getPrice(player2.getPosition(), 3);
-
-                        player2.setMoney(player2.getMoney() - temp);
-
-                        if (player2.getMoney() < 0)
+                    if (island2 > 0)
+                        island2--;
+                    else {
+                        temp = player2.getPosition();
+                        temp += (dice + dice2);
+                        if (temp > 39)
                         {
-                            MessageBox(hWnd, _T("플레이어1 승리"), _T("게임 종료"), MB_OK);
+                            player2.setMoney(player2.getMoney() + turnMoney);
+                            temp %= 40;
                         }
+                        player2.setPosition(temp);
+                        dropDice = true;
+
+                        wsprintf(str, _T("땅  : %d 원"), build.getPrice(player1.getPosition(), 0));
+                        SetDlgItemText(hWnd, IDC_EDIT3, str);
+                        wsprintf(str, _T("별장: %d 원"), build.getPrice(player1.getPosition(), 1));
+                        SetDlgItemText(hWnd, IDC_EDIT4, str);
+                        wsprintf(str, _T("빌딩: %d 원"), build.getPrice(player1.getPosition(), 2));
+                        SetDlgItemText(hWnd, IDC_EDIT5, str);
+                        wsprintf(str, _T("호텔: %d 원"), build.getPrice(player1.getPosition(), 3));
+                        SetDlgItemText(hWnd, IDC_EDIT6, str);
+
+                        if (boardOwn[player2.getPosition()][0] == 1)
+                        {
+                            buyChance = true;
+
+                            temp = 0;
+                            if (boardOwn[player2.getPosition()][1] == 1)
+                                temp += build.getPrice(player2.getPosition(), 1);
+
+                            if (boardOwn[player2.getPosition()][2] == 1)
+                                temp += build.getPrice(player2.getPosition(), 2);
+
+                            if (boardOwn[player2.getPosition()][3] == 1)
+                                temp += build.getPrice(player2.getPosition(), 3);
+
+                            player2.setMoney(player2.getMoney() - temp);
+
+                            if (player2.getMoney() < 0)
+                            {
+                                MessageBox(hWnd, _T("플레이어1 승리"), _T("게임 종료"), MB_OK);
+                            }
+                        }
+                        if (player2.getPosition() == 10)
+                            island2 = 3;
                     }
                 }
+
                 break;
             case IDC_BUTTON2:
                 CheckDlgButton(hWnd, IDC_CHECK1, BST_UNCHECKED);
@@ -503,8 +531,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     if (temp == 2 || temp == 7 || temp == 12 || temp == 17 || temp == 22 || temp == 35)
                     {
                         player1.setMoney(player1.getMoney() + 1000);
+                        break;
                     }
-                    else if (temp == 20 || temp == 38)
+                    else if (temp == 38)
                     {
                         player1.setMoney(player1.getMoney() - 2000);
                         if (player1.getMoney() < 0)
@@ -512,8 +541,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
                             DestroyWindow(hWnd);
                         }
+                        donation += 2000;
+                        break;
                     }
-                    if (temp != 0 && temp != 2 && temp != 7 && temp != 10 && temp != 12 && temp != 17 && temp != 20 && temp != 22 && temp != 30 && temp != 35 && temp != 38)
+                    else if (temp == 20)
+                    {
+                        player1.setMoney(player1.getMoney() + donation);
+                        break;
+                    }
+
+                    else if (temp != 0 && temp != 2 && temp != 7 && temp != 10 && temp != 12 && temp != 17 && temp != 20 && temp != 22 && temp != 30 && temp != 35)
                     {
                         temp = 0;
                         if (boardOwn[player1.getPosition()][0] != 2)
@@ -525,21 +562,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             }
                             if (SendMessage(hCheck[1], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][1] == 0)
                             {
-                                temp += build.getPrice(player1.getPosition(), 1);
-                                boardOwn[player1.getPosition()][1] = 1;
+                                if (boardOwn[player1.getPosition()][0] == 1)
+                                {
+                                    temp += build.getPrice(player1.getPosition(), 1);
+                                    boardOwn[player1.getPosition()][1] = 1;
+                                }
                             }
                             if (SendMessage(hCheck[2], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][2] == 0)
                             {
-                                temp += build.getPrice(player1.getPosition(), 2);
-                                boardOwn[player1.getPosition()][2] = 1;
+                                if (boardOwn[player1.getPosition()][0] == 1)
+                                {
+                                    temp += build.getPrice(player1.getPosition(), 2);
+                                    boardOwn[player1.getPosition()][2] = 1;
+                                }
                             }
                             if (SendMessage(hCheck[3], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player1.getPosition()][3] == 0)
                             {
-                                temp += build.getPrice(player1.getPosition(), 3);
-                                boardOwn[player1.getPosition()][3] = 1;
+                                if (boardOwn[player1.getPosition()][0] == 1)
+                                {
+                                    temp += build.getPrice(player1.getPosition(), 3);
+                                    boardOwn[player1.getPosition()][3] = 1;
+                                }
                             }
                             player1.setMoney(player1.getMoney() - temp);
+
+                       
                         }
+                    }
+                    if (player1.getMoney() < 0)
+                    {
+                        MessageBox(hWnd, _T("플레이어2 승리"), _T("게임 종료"), MB_OK);
+                        DestroyWindow(hWnd);
                     }
                 }
                 else if (turn == 2)
@@ -548,8 +601,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                     if (temp == 2 || temp == 7 || temp == 12 || temp == 17 || temp == 22 || temp == 35)
                     {
                         player2.setMoney(player2.getMoney() + 1000);
+                        break;
                     }
-                    else if (temp == 20 || temp == 38)
+                    else if (temp == 38)
                     {
                         player2.setMoney(player2.getMoney() - 2000);
                         if (player2.getMoney() < 0)
@@ -557,8 +611,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                             MessageBox(hWnd, _T("플레이어1 승리"), _T("게임 종료"), MB_OK);
                             DestroyWindow(hWnd);
                         }
+                        donation += 2000;
+                        break;
                     }
-                    if (temp != 0 && temp != 2 && temp != 7 && temp != 10 && temp != 12 && temp != 17 && temp != 20 && temp != 22 && temp != 30 && temp != 35 && temp != 38)
+                    else if (temp == 20)
+                    {
+                        player2.setMoney(player1.getMoney() + donation);
+                        break;
+                    }
+                    if (temp != 0 && temp != 2 && temp != 7 && temp != 10 && temp != 12 && temp != 17 && temp != 20 && temp != 22 && temp != 30 && temp != 35)
                     {
                         if (boardOwn[player2.getPosition()][0] != 1)
                         {
@@ -568,23 +629,37 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                                 temp += build.getPrice(player2.getPosition(), 0);
                                 boardOwn[player2.getPosition()][0] = 2;
                             }
-                            if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][1] == 0)
+                            if (SendMessage(hCheck[5], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][1] == 0 )
                             {
-                                temp += build.getPrice(player2.getPosition(), 1);
-                                boardOwn[player2.getPosition()][1] = 1;
+                                if (boardOwn[player2.getPosition()][0] == 2)
+                                {
+                                    temp += build.getPrice(player2.getPosition(), 1);
+                                    boardOwn[player2.getPosition()][1] = 1;
+                                }
                             }
                             if (SendMessage(hCheck[6], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][2] == 0)
                             {
-                                temp += build.getPrice(player2.getPosition(), 2);
-                                boardOwn[player2.getPosition()][2] = 1;
+                                if (boardOwn[player2.getPosition()][0] == 2)
+                                {
+                                    temp += build.getPrice(player2.getPosition(), 2);
+                                    boardOwn[player2.getPosition()][2] = 1;
+                                }
                             }
                             if (SendMessage(hCheck[7], BM_GETCHECK, 0, 0) == BST_CHECKED && boardOwn[player2.getPosition()][3] == 0)
                             {
-                                temp += build.getPrice(player2.getPosition(), 3);
-                                boardOwn[player2.getPosition()][3] = 1;
+                                if (boardOwn[player2.getPosition()][0] == 2)
+                                {
+                                    temp += build.getPrice(player2.getPosition(), 3);
+                                    boardOwn[player2.getPosition()][3] = 1;
+                                }
                             }
                             player2.setMoney(player2.getMoney() - temp);
                         }
+                    }
+                    if (player2.getMoney() < 0)
+                    {
+                        MessageBox(hWnd, _T("플레이어1 승리"), _T("게임 종료"), MB_OK);
+                        DestroyWindow(hWnd);
                     }
                 }
                 temp = 0;
@@ -668,6 +743,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             wsprintf(str, _T("플레이어 %d 턴"),turn);
             SetDlgItemText(hWnd, IDC_EDIT7, str);
             
+            wsprintf(str, _T("P1 %d 턴남음"), island1);
+            SetDlgItemText(hWnd, IDC_EDIT8, str);
+
+            wsprintf(str, _T("P2 %d 턴남음"), island2);
+            SetDlgItemText(hWnd, IDC_EDIT9, str);
+
+            wsprintf(str, _T("금액: %d 원"), donation);
+            SetDlgItemText(hWnd, IDC_EDIT10, str);
+
             SelectObject(mem1dc, oldBit1);
             DeleteDC(mem1dc);
             EndPaint(hWnd, &ps);
