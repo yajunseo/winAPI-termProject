@@ -1,0 +1,17 @@
+﻿  BlueMarble.cpp
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(210,49): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(211,50): warning C4244: '=': 'LONG'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(215,45): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(217,46): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(223,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(225,47): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(229,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(231,44): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(237,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\BlueMarble.cpp(239,43): warning C4244: '=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  코드를 생성하고 있습니다.
+  1 of 25 functions ( 4.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  코드를 생성했습니다.
+  BlueMarble.vcxproj -> C:\Users\yajunseo\Desktop\대학교\3학년1학기\윈도우프로그래밍\텀 프로젝트\winAPI-termProject\BlueMarble\Release\BlueMarble.exe
